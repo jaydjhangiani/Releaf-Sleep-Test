@@ -1,10 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import Chart from "./Chart";
 import axios from "axios";
 
+function msToTime(duration) {
+  duration = duration / 1000000; 
+  var milliseconds = parseInt((duration%1000)/100)
+  , seconds = parseInt((duration/1000)%60)
+  , minutes = parseInt((duration/(1000*60))%60)
+  , hours = parseInt((duration/(1000*60*60))%24);
+
+ hours = (hours < 10) ? "0" + hours : hours;
+ minutes = (minutes < 10) ? "0" + minutes : minutes;
+ seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+ return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
+
 export default function Dashboard({user}) {
-    const [articleId, setArticleId] = useState(''); 
     const [sleepData, setSleepData] = useState([]);
+    const [sleep, setSleep] = useState([])
+    // endTimeMillis: timeRightNow,
+    // startTimeMillis: timeRightNow - 86400000
 
     const config = {
         headers:{
@@ -24,17 +41,30 @@ export default function Dashboard({user}) {
 
     useEffect(() => {
         axios.post("https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",body, config)
-            .then(response => setSleepData(response.data.bucket[0].dataset[0].point))
+            .then(response => {
+              setSleepData(response.data.bucket[0].dataset[0].point)
+            })
             .catch(err => console.log(err.response.data.error.message))
     },[])
 
-
-    console.log(sleepData)
+    useEffect(() => {
+      if(sleepData.length > 0){
+        setSleep(
+          sleepData.map((item,index) => ({
+            index,
+            startTime: item.startTimeNanos,
+            val: item?.value[0].intVal,
+            duration: (item.endTimeNanos - item.startTimeNanos )/1000000,
+            durationHMS: msToTime(item.endTimeNanos - item.startTimeNanos)
+          })
+        ))
+        }
+    },[sleepData])
 
 
     return (
         <DashboardWrapper>
-           <DashboardH1>Sleep Data</DashboardH1>
+           {sleep.length > 0 ? <Chart sleep={sleep} /> : <h1>No Data</h1>}
         </DashboardWrapper>
     )
 
