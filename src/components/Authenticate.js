@@ -6,15 +6,15 @@ import GoogleLogin from "react-google-login";
 
 export default function Authenticate({ user, setUser }) {
   const handleLoginSuccess = (response) => {
-    console.log(response.mc.access_token);
-    if (response.mc.access_token) {
+    console.log(response.Zb.access_token);
+    if (response.Zb.access_token) {
       setUser({
         ...response.profileObj,
         haslogin: true,
-        accessToken: response.mc.access_token,
+        accessToken: response.Zb.access_token,
       });
 
-      localStorage.setItem('access-token',response.mc.access_token)
+      localStorage.setItem('access-token',response.Zb.access_token)
       console.log(user);
     }
   };
