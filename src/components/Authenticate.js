@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { SiGooglefit } from "react-icons/si";
 import img from "../assets/images/releaf.jpeg";

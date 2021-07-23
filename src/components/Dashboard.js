@@ -20,6 +20,7 @@ function msToTime(duration) {
 export default function Dashboard({user}) {
     const [sleepData, setSleepData] = useState([]);
     const [sleep, setSleep] = useState([])
+    const timeRightNow = Date.now()
     // endTimeMillis: timeRightNow,
     // startTimeMillis: timeRightNow - 86400000
 
@@ -37,6 +38,8 @@ export default function Dashboard({user}) {
        ],
        endTimeMillis: 1626584659836,
        startTimeMillis:1626498259836 
+      // endTimeMillis: timeRightNow - 86400000,
+      // startTimeMillis: timeRightNow - 86400000 - 86400000
     }
 
     useEffect(() => {
@@ -53,6 +56,7 @@ export default function Dashboard({user}) {
           sleepData.map((item,index) => ({
             index,
             startTime: item.startTimeNanos,
+            endTime: item.endTimeNanos,
             val: item?.value[0].intVal,
             duration: (item.endTimeNanos - item.startTimeNanos )/1000000,
             durationHMS: msToTime(item.endTimeNanos - item.startTimeNanos)
@@ -79,19 +83,19 @@ const DashboardWrapper = styled.div`
   padding: 15px;
 `;
 
-const DashboardH2 = styled.h2`
-  font-size: 1rem;
-  margin-bottom: 10px;
-`;
-const DashboardP = styled.p`
-  font-size: 1rem;
-  text-align: center;
-`;
+// const DashboardH2 = styled.h2`
+//   font-size: 1rem;
+//   margin-bottom: 10px;
+// `;
+// const DashboardP = styled.p`
+//   font-size: 1rem;
+//   text-align: center;
+// `;
 
-const DashboardH1 = styled.h1`
-  font-size: 2rem;
-  margin-top: 25px;
-  @media screen and (max-width: 480px) {
-    font-size: 1.5rem;
-  }
-`;
+// const DashboardH1 = styled.h1`
+//   font-size: 2rem;
+//   margin-top: 25px;
+//   @media screen and (max-width: 480px) {
+//     font-size: 1.5rem;
+//   }
+// `;

@@ -29,7 +29,7 @@ const Tooltip = (props) => {
       {active && (
         <div className={`Tooltip-Tip ${props.direction || "top"}`}>
           {/* Content */}
-          <Content props={props.content}/>
+          <Content props={props.content} val={props.val} />
         </div>
       )}
     </div>
