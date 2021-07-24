@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from "styled-components";
 import {GiNightSleep} from "react-icons/gi"
 import Tooltip from './Tooltip';
+import { useEffect } from 'react';
 
 function msToTime(duration) {
-    duration = duration / 1000000; 
-    var milliseconds = parseInt((duration%1000)/100)
-    , seconds = parseInt((duration/1000)%60)
+    
+    var seconds = parseInt((duration/1000)%60)
     , minutes = parseInt((duration/(1000*60))%60)
     , hours = parseInt((duration/(1000*60*60))%24);
   
@@ -18,8 +18,37 @@ function msToTime(duration) {
   }
 
 export default function Chart({sleep}) {
-    let scale = 0.5
-    console.log(sleep)
+    const [scale, setScale] = useState(null)
+
+    Array.prototype.sum = function (prop) {
+        var deep = 0
+        var light =0 
+        for ( var i = 0, _len = this.length; i < _len; i++ ) {
+            if(this[i]["val"] == 4){
+                console.log(this[i]["val"])
+            light += this[i][prop]
+            }
+            else{
+                deep += this[i][prop]
+            }
+        }
+        return [deep, light]
+    }
+    
+    console.log(sleep.sum("duration"))
+
+    
+
+    useEffect(() => {
+        if(sleep.sum("duration")[0] + sleep.sum("duration")[1] > 36000000 ){
+            setScale(0.5);
+        }else if (sleep.sum("duration")[0] + sleep.sum("duration")[1] < 18000000){
+            setScale(2);
+        }else{
+            setScale(1);
+        }
+    },[scale])
+
     return (
         <DashboardDetailsWrapper>
             <div style ={{
@@ -32,6 +61,8 @@ export default function Chart({sleep}) {
             </div>
             {console.log(sleep[sleep.length - 1].endTime -  sleep[0].startTime)}
             <h3>{msToTime(sleep[sleep.length - 1].endTime -  sleep[0].startTime)}</h3>
+            <h4>Light Sleep: {msToTime(sleep.sum("duration")[1])}</h4>
+            <h4>Deep Sleep: {msToTime(sleep.sum("duration")[0])}</h4>
             <Sleep>
                 <SleepH3>Light</SleepH3>
             <ChartWrapper>
@@ -41,7 +72,7 @@ export default function Chart({sleep}) {
                      <>
                      <Tooltip content={item.durationHMS} val={item.val} direction="top">
                      <div className="box-1" style={{
-                         width: `${(item.duration) * scale/100000}px`,
+                         width: `${(item.duration) * scale /100000}px`,
                          borderRight: index === sleep.length - 1 ? 'none' : null
                       } }></div> </Tooltip></> : 
                       <>
